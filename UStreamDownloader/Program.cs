@@ -10,10 +10,15 @@ namespace UStreamDownloader
 {
     class Program
     {
+
+        //TODO: Making code less quick and dirty.
+
         public static void Main(string[] args)
         {
+            //boolean variable to check if the while loop should be exited.
             bool confirm = false;
 
+            //A string list to store the IDs for the streams
             List<string> streamID = new List<string> { };
 
 
@@ -24,6 +29,7 @@ namespace UStreamDownloader
 
                 streamID.Add(Console.ReadLine());
 
+                //Switch statements to check if user wants to add more files or if they are done.
                 Console.WriteLine("Are you Done? (Yes/No)");
                 switch (Console.ReadLine().ToLower())
                 {
@@ -45,20 +51,24 @@ namespace UStreamDownloader
                 
             }
 
+            //Start download
             Download(streamID);
 
 
         }
 
+        //A static function which will start downloading the streams via FFmpeg
         public static void Download(List<string> streamIDs)
         {
 
+            //Tells user how many streams will be downloaded.
             Console.WriteLine("{0} Streams will be downloaded.", streamIDs.Count);
 
             
-
+            //For loop which will run FFmpeg as often as needed.
             for (int i = 0; i < streamIDs.Count-1; i++)
             {
+                //create a new process for ffmpeg with the arguments to download the streams.
                 var process = new Process
                 {
                     StartInfo = new ProcessStartInfo
@@ -68,12 +78,17 @@ namespace UStreamDownloader
                     }
                 };
 
+                //Start the process 
                 process.Start();
+                //Wait until the process is done
                 process.WaitForExit();
+                //Dispose the process
                 process.Dispose();
+                //Repeat
 
             }
 
+            //Done.
             Console.WriteLine("Done!");
             Console.ReadLine();
 
