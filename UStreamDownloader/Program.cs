@@ -66,7 +66,7 @@ namespace UStreamDownloader
 
             
             //For loop which will run FFmpeg as often as needed.
-            for (int i = 0; i < streamIDs.Count-1; i++)
+            for (int i = 0; i < streamIDs.Count; i++)
             {
                 //create a new process for ffmpeg with the arguments to download the streams.
                 var process = new Process
