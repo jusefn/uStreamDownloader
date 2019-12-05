@@ -79,31 +79,31 @@ namespace UStreamDownloader
                     
                         
                       
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
+                
                     //Putting in using to make sure that the process is being loaded out of the memory after launching to avoid memory leak
                     using (Process process = new Process{}){
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
                         process.StartInfo = new ProcessStartInfo{
 
                             FileName = "ffmpeg.exe",
                             Arguments = String.Format("-i https://stream-cd.univie.ac.at/opencast_default/smil:engage-player_{0}_presentation.smil/playlist.m3u8 -c copy -bsf:a aac_adtstoasc {0}.mp4", streamIDs[i])
                         };
-
-                         //Start the process 
-                        process.Start();
-                        //Wait until the process is done
-                        process.WaitForExit();
-                        //Dispose the process
-                        process.Dispose();
-                        //Repeat
-                    }
-                } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)){
-                     using (Process process = new Process{}){
-                        process.StartInfo = new ProcessStartInfo{
+                        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)){
+                            process.StartInfo = new ProcessStartInfo{
 
                             FileName = "ffmpeg",
                             Arguments = String.Format("-i https://stream-cd.univie.ac.at/opencast_default/smil:engage-player_{0}_presentation.smil/playlist.m3u8 -c copy -bsf:a aac_adtstoasc {0}.mp4", streamIDs[i])
                         };
+                        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
+                            //throw a not implemented exception because i do not have a computer running macOS to test this.
+                            //TODO: Add macOS support
+                            throw new NotImplementedException("OS X is not supported (yet)");
+                            
+                        } else {
+
+                            throw new NotImplementedException("your operating system is not supported");
+                        }
 
                          //Start the process 
                         process.Start();
@@ -113,11 +113,9 @@ namespace UStreamDownloader
                         process.Dispose();
                         //Repeat
                     }
-                } else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
-                    //throw a not implemented exception because i do not have a computer running macOS to test this.
-                    //TODO: Add macOS support
-                    throw new NotImplementedException("OS X is not supported (yet)");
-                }
+                
+                  
+                
  
 
             }
