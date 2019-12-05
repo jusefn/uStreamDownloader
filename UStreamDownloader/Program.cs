@@ -14,9 +14,23 @@ namespace UStreamDownloader
 
         //TODO: Making code less quick and dirty.
 
+        private static string ffmpegOsPlatform { get; set; }
         public static void Main(string[] args)
         {
-             
+            //Check for operating system once
+             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                            ffmpegOsPlatform = "ffmpeg.exe";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                            ffmpegOsPlatform = "ffmpeg";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                            //throw a not implemented exception because i do not have a computer running macOS to test this.
+                            //TODO: Add macOS support
+                            throw new NotImplementedException("OS X is not supported (yet)");
+            else 
+                            throw new NotImplementedException("your operating system is not supported");
+            
+
+
             //boolean variable to check if the while loop should be exited.
             bool confirm = false;
 
@@ -60,7 +74,7 @@ namespace UStreamDownloader
         }
 
         //A static function which will start downloading the streams via FFmpeg
-        public static void Download(List<string> streamIDs)
+        static void Download(List<string> streamIDs)
         {
 
             //Tells user how many streams will be downloaded.
@@ -82,29 +96,13 @@ namespace UStreamDownloader
                 
                     //Putting in using to make sure that the process is being loaded out of the memory after launching to avoid memory leak
                     using (Process process = new Process{}){
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                        {
+                        
                         process.StartInfo = new ProcessStartInfo{
 
-                            FileName = "ffmpeg.exe",
+                            FileName = ffmpegOsPlatform,
                             Arguments = String.Format("-i https://stream-cd.univie.ac.at/opencast_default/smil:engage-player_{0}_presentation.smil/playlist.m3u8 -c copy -bsf:a aac_adtstoasc {0}.mp4", streamIDs[i])
+                        
                         };
-                        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)){
-                            process.StartInfo = new ProcessStartInfo{
-
-                            FileName = "ffmpeg",
-                            Arguments = String.Format("-i https://stream-cd.univie.ac.at/opencast_default/smil:engage-player_{0}_presentation.smil/playlist.m3u8 -c copy -bsf:a aac_adtstoasc {0}.mp4", streamIDs[i])
-                        };
-                        } else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)){
-                            //throw a not implemented exception because i do not have a computer running macOS to test this.
-                            //TODO: Add macOS support
-                            throw new NotImplementedException("OS X is not supported (yet)");
-                            
-                        } else {
-
-                            throw new NotImplementedException("your operating system is not supported");
-                        }
-
                          //Start the process 
                         process.Start();
                         //Wait until the process is done
