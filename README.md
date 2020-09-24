@@ -1,3 +1,5 @@
+## Given that I am no longer enrolled in the University of Vienna, this repository is now archived and I no longer see a personal reason/use for this project. 
+
 # uStreamDownloader
 Downloads U:Stream lecture streams from the University of Vienna, Austria
 
